@@ -289,14 +289,41 @@ function clearBannerPreview() {
   document.getElementById('uploadDropzone').style.display = 'block';
 }
 
+function setSubmitButtonState(loading, isEdit) {
+  const submitBtn = document.getElementById('btnSubmitProject');
+  if (!submitBtn) return;
+  if (loading) {
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = `
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="spin">
+        <circle cx="12" cy="12" r="10" stroke-opacity="0.25"/>
+        <path d="M12 2a10 10 0 0 1 10 10"/>
+      </svg>
+      <span id="submitBtnText">Saving...</span>
+    `;
+  } else {
+    submitBtn.disabled = false;
+    const label = isEdit ? 'Update Project' : 'Deploy Project';
+    submitBtn.innerHTML = `
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20 6 9 17 4 12"/>
+      </svg>
+      <span id="submitBtnText">${label}</span>
+    `;
+  }
+}
+
 // ─── FORM HANDLING ────────────────────────────────────────────────────────────
 function resetProjectForm() {
-  document.getElementById('projectForm').reset();
+  const form = document.getElementById('projectForm');
+  if (form) form.reset();
   editingProjectId = null;
   selectedImageFile = null;
-  document.getElementById('formTitle').textContent = 'Add New Department Project';
-  document.getElementById('formDesc').textContent = 'Fill in the information below and upload a banner image for the hub.';
-  document.getElementById('submitBtnText').textContent = 'Deploy Project';
+  const formTitle = document.getElementById('formTitle');
+  if (formTitle) formTitle.textContent = 'Add New Department Project';
+  const formDesc = document.getElementById('formDesc');
+  if (formDesc) formDesc.textContent = 'Fill in the information below and upload a banner image for the hub.';
+  setSubmitButtonState(false, false);
   clearBannerPreview();
 }
 
@@ -312,9 +339,11 @@ window.startEditProject = function(id) {
   document.getElementById('pUrl').value = p.url || '';
   document.getElementById('pTech').value = (p.techStack || []).join(', ');
 
-  document.getElementById('formTitle').textContent = `Edit Project: ${p.name}`;
-  document.getElementById('formDesc').textContent = 'Modify project details and save changes.';
-  document.getElementById('submitBtnText').textContent = 'Update Project';
+  const formTitle = document.getElementById('formTitle');
+  if (formTitle) formTitle.textContent = `Edit Project: ${p.name}`;
+  const formDesc = document.getElementById('formDesc');
+  if (formDesc) formDesc.textContent = 'Modify project details and save changes.';
+  setSubmitButtonState(false, true);
 
   if (p.banner) {
     setBannerPreview(p.banner);
@@ -473,8 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const techStack = techRaw ? techRaw.split(',').map(t => t.trim()).filter(Boolean) : [];
 
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Saving...';
+    setSubmitButtonState(true, !!editingProjectId);
 
     // Prepare FormData
     const formData = new FormData();
@@ -523,13 +551,9 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (err) {
       console.error('Save error:', err);
-      showToast('Network error while saving project.', 'error');
+      showToast('Error saving project.', 'error');
     } finally {
-      submitBtn.disabled = false;
-      const textSpan = document.getElementById('submitBtnText');
-      if (textSpan) {
-        textSpan.textContent = editingProjectId ? 'Update Project' : 'Deploy Project';
-      }
+      setSubmitButtonState(false, !!editingProjectId);
     }
   });
 

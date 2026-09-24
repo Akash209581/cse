@@ -1,0 +1,18 @@
+[Unit]
+Description=CSE Digital Hub Node.js Server
+After=network.target mongod.service
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/var/www/cse
+ExecStart=/usr/bin/node server.js
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=cse-digital-hub
+Environment=NODE_ENV=production PORT=4867 HOST=0.0.0.0
+
+[Install]
+WantedBy=multi-user.target

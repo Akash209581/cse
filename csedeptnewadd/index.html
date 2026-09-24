@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal | CSE Department Digital Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/admin.css">
+</head>
+<body>
+
+  <!-- Background Blobs -->
+  <div class="blob blob-top-left"></div>
+  <div class="blob blob-top-right"></div>
+  <div class="blob blob-bottom-right"></div>
+
+  <!-- ========================================================
+       1. LOCK SCREEN (PASSWORD ACCESS GATE)
+  ======================================================== -->
+  <div class="lock-wrapper" id="lockScreen">
+    <div class="lock-card">
+      <div class="lock-shield-icon">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="M8 11h8"/>
+          <circle cx="12" cy="11" r="1.5" fill="currentColor"/>
+        </svg>
+      </div>
+      <h2 class="lock-title">CSE Department Hub</h2>
+      <p class="lock-sub">Enter your administrator passcode to access project deployment and platform management.</p>
+
+      <form class="passcode-form" id="passcodeForm" novalidate>
+        <div class="lock-alert" id="lockAlert"></div>
+
+        <div class="passcode-field">
+          <input type="password" id="passcodeInput" placeholder="Enter admin passcode..." autocomplete="current-password" autofocus required>
+          <button type="button" class="eye-toggle-btn" id="eyeToggleBtn" title="Show/Hide Passcode">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </button>
+        </div>
+
+        <button type="submit" class="btn-unlock" id="btnUnlock">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+          </svg>
+          Unlock Admin Dashboard
+        </button>
+      </form>
+
+      <div class="lock-helper-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        Default Passcode: <strong>csedept@2026</strong>
+      </div>
+
+      <a href="/" class="lock-back-link">← Return to Public Showcase</a>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       2. ADMIN DASHBOARD
+  ======================================================== -->
+  <div class="dashboard-wrapper" id="dashWrapper">
+
+    <!-- Top Navigation -->
+    <header class="dash-nav">
+      <div class="dash-nav-left">
+        <div class="dash-badge-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          </svg>
+        </div>
+        <div class="dash-title-wrap">
+          <h1>CSE Digital Platform Admin</h1>
+          <p>Department Projects & Deployment Hub</p>
+        </div>
+      </div>
+
+      <div class="dash-nav-right">
+        <button class="nav-btn nav-btn-outline" id="btnOpenPwdModal">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Change Passcode
+        </button>
+        <a href="/" target="_blank" class="nav-btn nav-btn-outline">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15,3 21,3 21,9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          View Public Hub
+        </a>
+        <button class="nav-btn nav-btn-danger" id="btnLogout">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16,17 21,12 16,7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          Lock / Logout
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="dash-content">
+
+      <!-- Metrics Row -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-label">Total Platforms</div>
+            <div class="stat-value" id="statTotal">0</div>
+          </div>
+          <div class="stat-icon purple">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-label">Live Online</div>
+            <div class="stat-value" id="statLive">0</div>
+          </div>
+          <div class="stat-icon green">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <div class="stat-label">In Dev / Soon</div>
+            <div class="stat-value" id="statOthers">0</div>
+          </div>
+          <div class="stat-icon blue">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- Tabs Header -->
+      <div class="tabs-header">
+        <div class="tabs-nav">
+          <button class="tab-btn active" data-tab="list">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Registered Platforms
+            <span class="tab-badge" id="tabCount">0</span>
+          </button>
+          <button class="tab-btn" data-tab="form">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Add New Project
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB PANEL 1: LIST -->
+      <div class="tab-panel active" id="panel-list">
+        <div class="table-card">
+          <div class="table-toolbar">
+            <div class="search-box-admin">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input type="text" id="adminSearchInput" placeholder="Filter projects by title, stack...">
+            </div>
+            <button class="btn-add-primary" onclick="resetProjectForm(); switchTab('form');">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add New Project
+            </button>
+          </div>
+
+          <div style="overflow-x: auto;">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th style="width: 38%;">Project Details</th>
+                  <th style="width: 15%;">Status</th>
+                  <th style="width: 22%;">Tech Stack</th>
+                  <th style="width: 13%;">Live Link</th>
+                  <th style="width: 12%; text-align: right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminTableBody">
+                <!-- Populated by admin.js -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- TAB PANEL 2: ADD / EDIT FORM -->
+      <div class="tab-panel" id="panel-form">
+        <div class="form-card">
+          <div class="form-header">
+            <h2 id="formTitle">Add New Department Project</h2>
+            <p id="formDesc">Fill in the information below and upload a banner image for the hub.</p>
+          </div>
+
+          <form id="projectForm" novalidate>
+            <div class="form-grid">
+
+              <!-- Title & Status -->
+              <div class="grid-2">
+                <div class="form-group">
+                  <label for="pTitle">Project / Website Name <span class="req">*</span></label>
+                  <input type="text" id="pTitle" class="form-control" placeholder="e.g. Vignan AI Lab Portal" required>
+                </div>
+                <div class="form-group">
+                  <label for="pStatus">Platform Status <span class="req">*</span></label>
+                  <select id="pStatus" class="form-control">
+                    <option value="Live">🟢 Live (Active)</option>
+                    <option value="Coming Soon">🟡 Coming Soon</option>
+                    <option value="In Development">🔵 In Development</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Description -->
+              <div class="form-group">
+                <label for="pDesc">Short Summary / Description <span class="req">*</span></label>
+                <textarea id="pDesc" class="form-control" rows="3" placeholder="Brief summary of what this platform does and who it serves..." required></textarea>
+              </div>
+
+              <!-- URL & Tech Stack -->
+              <div class="grid-2">
+                <div class="form-group">
+                  <label for="pUrl">Live Website URL <span class="req">*</span></label>
+                  <input type="url" id="pUrl" class="form-control" placeholder="https://project.vignan.ac.in" required>
+                </div>
+                <div class="form-group">
+                  <label for="pTech">Technologies Used</label>
+                  <input type="text" id="pTech" class="form-control" placeholder="e.g. React, Node.js, MongoDB (comma separated)">
+                </div>
+              </div>
+
+              <!-- Banner Upload -->
+              <div class="form-group">
+                <label>Banner Image (Computer Upload) <span class="req">*</span></label>
+
+                <!-- Dropzone when no image is loaded -->
+                <div class="upload-dropzone" id="uploadDropzone">
+                  <div class="upload-icon-circle">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                      <polyline points="17 8 12 3 7 8"/>
+                      <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                  </div>
+                  <div class="upload-title">Choose or drag & drop banner image</div>
+                  <div class="upload-desc">PNG, JPG, WEBP formats supported (Recommended 1200×640 px)</div>
+                  <button type="button" class="btn-file-select" id="btnSelectBanner">Browse from Computer</button>
+                  <input type="file" id="bannerFileInput" accept="image/*" style="display:none;">
+                </div>
+
+                <!-- Preview Box when image is chosen -->
+                <div class="image-preview-wrap" id="previewWrap">
+                  <img id="bannerPreviewImg" src="" alt="Banner Preview">
+                  <div class="preview-overlay-bar">
+                    <button type="button" class="btn-preview-action" id="btnChangeImg">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17,8 12,3 7,8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                      Change
+                    </button>
+                    <button type="button" class="btn-preview-action remove" id="btnRemoveImg">
+                      ✕ Remove
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="form-footer">
+              <button type="button" class="btn-ghost" id="btnCancelProject">Cancel</button>
+              <button type="submit" class="btn-add-primary" id="btnSubmitProject">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                <span id="submitBtnText">Deploy Project</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- ========================================================
+       3. CHANGE PASSCODE MODAL
+  ======================================================== -->
+  <div class="modal-overlay" id="pwdModal">
+    <div class="modal-dialog">
+      <h3>Update Admin Passcode</h3>
+      <p>Set a new secure passcode for administrator access.</p>
+
+      <form id="pwdChangeForm">
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label for="newPwdInput">New Passcode</label>
+          <input type="text" id="newPwdInput" class="form-control" placeholder="Enter new passcode..." required minlength="4">
+        </div>
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn-ghost" id="btnClosePwdModal">Cancel</button>
+          <button type="submit" class="btn-add-primary">Save New Passcode</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Stack -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script src="/admin.js"></script>
+</body>
+</html>

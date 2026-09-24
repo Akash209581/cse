@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vignan Digital | Ideas Deployed. Impact Delivered.</title>
+  <meta name="description" content="A collection of live digital platforms built for the Vignan community.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@1,700;1,800&family=Dancing+Script:wght@700&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <!-- ========== AMBIENT BLOBS ========== -->
+  <div class="blob blob-top-left"></div>
+  <div class="blob blob-top-right"></div>
+  <div class="blob blob-bottom-center"></div>
+  <div class="blob blob-bottom-left"></div>
+
+  <!-- ========== HEADER ========== -->
+  <header class="site-header">
+    <div class="header-left">
+      <img src="https://160.187.169.41/events/cse.png" onerror="this.onerror=null; this.src='cse.png';"
+        alt="Computer Science & Engineering" class="header-logo">
+    </div>
+
+    <div class="header-center">
+      <span class="header-dept-text">Computer Science &amp; Engineering</span>
+    </div>
+    <div class="header-right"></div>
+  </header>
+
+  <!-- ========== HERO SECTION ========== -->
+  <section class="hero-section">
+    <!-- Left ambient text -->
+    <div class="side-text side-text-left">
+      <span>SAME</span>
+      <span>PEOPLE</span>
+      <span>BIGGER</span>
+      <span>POSSIBILITIES</span>
+    </div>
+
+    <div class="hero-center">
+
+      <h1 class="hero-title">
+        Ideas Deployed.<br>
+        Impact <em class="hero-italic">Delivered.</em>
+      </h1>
+      <p class="hero-subtitle">A collection of live digital platforms</p>
+    </div>
+
+    <!-- Right ambient handwriting text -->
+    <div class="side-text side-text-right">
+      <span class="handwriting">Build</span>
+      <span class="handwriting">Deploy</span>
+      <span class="handwriting">Impact</span>
+    </div>
+  </section>
+
+  <!-- ========== PROJECTS GRID ========== -->
+  <main class="projects-section">
+    <!-- Search bar (optional – appears when searching) -->
+    <div class="search-wrap">
+      <div class="search-box">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
+        <input type="text" id="searchInput" placeholder="Search projects by name or tech stack...">
+        <button class="search-clear" id="searchClearBtn" title="Clear">✕</button>
+      </div>
+    </div>
+
+    <!-- Grid Container -->
+    <div class="projects-grid" id="projectsGrid">
+      <!-- Populated by JavaScript -->
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState" style="display:none;">
+      <div class="empty-icon">🔍</div>
+      <h3>No projects found</h3>
+      <p>Try a different search term or clear the filter.</p>
+      <button class="btn-outline" onclick="clearSearch()">Clear Filter</button>
+    </div>
+  </main>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="site-footer">
+    <span>Built for a brighter tomorrow.</span>
+  </footer>
+
+  <!-- ======== TOAST ======== -->
+  <div class="toast-stack" id="toastStack"></div>
+
+  <script src="app.js"></script>
+</body>
+
+</html>

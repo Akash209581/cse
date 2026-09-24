@@ -1,0 +1,27 @@
+services:
+  app:
+    build: .
+    container_name: cse-hub
+    restart: always
+    ports:
+      - "80:4867"
+      - "4867:4867"
+    environment:
+      - PORT=4867
+      - HOST=0.0.0.0
+      - MONGODB_URI=mongodb://mongo:27017/cse_digital_hub
+      - DEFAULT_ADMIN_PASSCODE=csedept@2026
+    volumes:
+      - ./uploads:/app/uploads
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:7.0
+    container_name: cse-hub-mongo
+    restart: always
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

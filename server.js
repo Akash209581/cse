@@ -31,6 +31,7 @@ app.use(express.json({ limit: '15mb' }));
 app.use(express.urlencoded({ extended: true, limit: '15mb' }));
 
 // Static file routes
+app.use('/cse-uploads', express.static(UPLOADS_DIR));
 app.use('/uploads', express.static(UPLOADS_DIR));
 app.use(express.static(__dirname));
 
@@ -146,7 +147,7 @@ apiRouter.post('/projects', upload.single('bannerImage'), async (req, res) => {
 
     let bannerUrl = '';
     if (req.file) {
-      bannerUrl = `/uploads/${req.file.filename}`;
+      bannerUrl = `/cse-uploads/${req.file.filename}`;
     } else if (req.body.banner) {
       bannerUrl = req.body.banner;
     }
@@ -213,13 +214,14 @@ apiRouter.put('/projects/:id', upload.single('bannerImage'), async (req, res) =>
 
     if (req.file) {
       // Remove old file if it was a local upload
-      if (project.banner && project.banner.startsWith('/uploads/')) {
-        const oldPath = path.join(__dirname, project.banner);
+      if (project.banner && (project.banner.startsWith('/uploads/') || project.banner.startsWith('/cse-uploads/'))) {
+        const oldFile = path.basename(project.banner);
+        const oldPath = path.join(UPLOADS_DIR, oldFile);
         if (fs.existsSync(oldPath)) {
           fs.unlink(oldPath, () => {});
         }
       }
-      project.banner = `/uploads/${req.file.filename}`;
+      project.banner = `/cse-uploads/${req.file.filename}`;
     } else if (req.body.banner !== undefined && req.body.banner !== '') {
       project.banner = req.body.banner;
     }
@@ -256,8 +258,9 @@ apiRouter.delete('/projects/:id', async (req, res) => {
     }
 
     // Clean up local upload image file
-    if (project.banner && project.banner.startsWith('/uploads/')) {
-      const filePath = path.join(__dirname, project.banner);
+    if (project.banner && (project.banner.startsWith('/uploads/') || project.banner.startsWith('/cse-uploads/'))) {
+      const oldFile = path.basename(project.banner);
+      const filePath = path.join(UPLOADS_DIR, oldFile);
       if (fs.existsSync(filePath)) {
         fs.unlink(filePath, () => {});
       }

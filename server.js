@@ -98,9 +98,10 @@ async function ensureAdminConfig() {
 }
 
 // ─── API ROUTES ───────────────────────────────────────────────────────────────
+const apiRouter = express.Router();
 
-// 1. GET /api/projects - List all projects
-app.get('/api/projects', async (req, res) => {
+// 1. GET /projects - List all projects
+apiRouter.get('/projects', async (req, res) => {
   try {
     const projects = await Project.find().sort({ createdAt: -1 });
     res.json({
@@ -123,8 +124,8 @@ app.get('/api/projects', async (req, res) => {
   }
 });
 
-// 2. POST /api/projects - Create project with image upload
-app.post('/api/projects', upload.single('bannerImage'), async (req, res) => {
+// 2. POST /projects - Create project with image upload
+apiRouter.post('/projects', upload.single('bannerImage'), async (req, res) => {
   try {
     const { name, status, desc, url } = req.body;
     let techStack = req.body.techStack;
@@ -181,8 +182,8 @@ app.post('/api/projects', upload.single('bannerImage'), async (req, res) => {
   }
 });
 
-// 3. PUT /api/projects/:id - Update project
-app.put('/api/projects/:id', upload.single('bannerImage'), async (req, res) => {
+// 3. PUT /projects/:id - Update project
+apiRouter.put('/projects/:id', upload.single('bannerImage'), async (req, res) => {
   try {
     const { id } = req.params;
     const { name, status, desc, url } = req.body;
@@ -245,8 +246,8 @@ app.put('/api/projects/:id', upload.single('bannerImage'), async (req, res) => {
   }
 });
 
-// 4. DELETE /api/projects/:id - Remove project
-app.delete('/api/projects/:id', async (req, res) => {
+// 4. DELETE /projects/:id - Remove project
+apiRouter.delete('/projects/:id', async (req, res) => {
   try {
     const { id } = req.params;
     const project = await Project.findById(id);
@@ -274,8 +275,8 @@ app.delete('/api/projects/:id', async (req, res) => {
   }
 });
 
-// 5. POST /api/auth/verify - Verify admin passcode
-app.post('/api/auth/verify', async (req, res) => {
+// 5. POST /auth/verify - Verify admin passcode
+apiRouter.post('/auth/verify', async (req, res) => {
   try {
     const { passcode } = req.body;
     if (!passcode) {
@@ -299,8 +300,8 @@ app.post('/api/auth/verify', async (req, res) => {
   }
 });
 
-// 6. POST /api/auth/change-passcode - Change admin passcode
-app.post('/api/auth/change-passcode', async (req, res) => {
+// 6. POST /auth/change-passcode - Change admin passcode
+apiRouter.post('/auth/change-passcode', async (req, res) => {
   try {
     const { newPasscode } = req.body;
     if (!newPasscode || newPasscode.trim().length < 4) {
@@ -319,6 +320,10 @@ app.post('/api/auth/change-passcode', async (req, res) => {
     res.status(500).json({ success: false, message: 'Server error updating passcode.' });
   }
 });
+
+// Mount router on both /cse-api and /api
+app.use('/cse-api', apiRouter);
+app.use('/api', apiRouter);
 
 // ─── PAGE ROUTES ──────────────────────────────────────────────────────────────
 app.get('/csedeptnewadd', (req, res) => {

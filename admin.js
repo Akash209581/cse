@@ -18,7 +18,7 @@ function isAuthorized() {
 
 async function verifyPasscodeWithServer(input) {
   try {
-    const res = await fetch('/api/auth/verify', {
+    const res = await fetch('/cse-api/auth/verify', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ passcode: input })
@@ -60,7 +60,7 @@ let selectedImageFile = null;
 
 async function loadProjects() {
   try {
-    const res = await fetch('/api/projects');
+    const res = await fetch('/cse-api/projects');
     if (res.ok) {
       const data = await res.json();
       adminProjects = data.projects || [];
@@ -331,7 +331,7 @@ window.deleteProject = async function(id) {
   if (!confirm(`Are you sure you want to delete "${name}" from the digital hub?`)) return;
 
   try {
-    const res = await fetch(`/api/projects/${id}`, { method: 'DELETE' });
+    const res = await fetch(`/cse-api/projects/${id}`, { method: 'DELETE' });
     if (res.ok) {
       adminProjects = adminProjects.filter(x => x.id !== id);
       renderAdminTable();
@@ -491,11 +491,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      let endpoint = '/api/projects';
+      let endpoint = '/cse-api/projects';
       let method = 'POST';
 
       if (editingProjectId) {
-        endpoint = `/api/projects/${editingProjectId}`;
+        endpoint = `/cse-api/projects/${editingProjectId}`;
         method = 'PUT';
       }
 
@@ -512,15 +512,24 @@ document.addEventListener('DOMContentLoaded', () => {
         switchTab('list');
         return;
       } else {
-        const errData = await res.json();
-        showToast(errData.message || 'Error saving project', 'error');
+        let errMsg = 'Error saving project';
+        try {
+          const errData = await res.json();
+          errMsg = errData.message || errMsg;
+        } catch (_) {
+          errMsg = `Server returned HTTP ${res.status}`;
+        }
+        showToast(errMsg, 'error');
       }
     } catch (err) {
       console.error('Save error:', err);
       showToast('Network error while saving project.', 'error');
     } finally {
       submitBtn.disabled = false;
-      document.getElementById('submitBtnText').textContent = editingProjectId ? 'Update Project' : 'Deploy Project';
+      const textSpan = document.getElementById('submitBtnText');
+      if (textSpan) {
+        textSpan.textContent = editingProjectId ? 'Update Project' : 'Deploy Project';
+      }
     }
   });
 
@@ -545,7 +554,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     try {
-      const res = await fetch('/api/auth/change-passcode', {
+      const res = await fetch('/cse-api/auth/change-passcode', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ newPasscode: newPwd })

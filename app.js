@@ -18,7 +18,7 @@ let state = {
 
 async function loadState() {
   try {
-    const res = await fetch('/api/projects');
+    const res = await fetch('/cse-api/projects');
     if (res.ok) {
       const data = await res.json();
       state.projects = data.projects || [];
